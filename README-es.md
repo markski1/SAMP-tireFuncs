@@ -53,6 +53,8 @@ En este ejemplo, se envia un mensaje al conductor de un vehiculo si le revientan
 
 *Nota: `GetVehicleDriver` no se incluye en esta libreria.
 
+*Nota2: Este callback solo funciona con lagcomp. Si tu server no tiene lagcomp, tendras que usar [opws-fix](https://github.com/boorzz/samp-opws-fix/)
+
 
 ## Valores
 
