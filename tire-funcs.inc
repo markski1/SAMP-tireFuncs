@@ -1,5 +1,5 @@
 /*
-	mrks_tireFuncs 0.3
+	tireFuncs 1.0
 
 	mrks.cf | github.com/markski1
 
@@ -8,7 +8,7 @@
 		SACNR
 */
 
-#if defined mrks_TireFuncs_included
+#if defined tireFuncs_included
 	#endinput
 #endif
 
@@ -16,7 +16,7 @@
 	native IsValidVehicle(vehicleid);
 #endif
 
-#define mrks_TireFuncs_included
+#define tireFuncs_included
 
 // TIRE TYPES
 // These are arbitrary and made only for easily handling individual tires in a recognizable way.
