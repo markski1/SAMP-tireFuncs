@@ -71,4 +71,5 @@ For state:
 ```
 TIRE_NOT_POPPED
 TIRE_POPPED
+TIRE_UNCHANGED 	// Used in `SetVehicleIndividualTire` to not modify a specified tire
 ```
