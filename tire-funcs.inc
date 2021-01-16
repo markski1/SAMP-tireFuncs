@@ -192,25 +192,25 @@ stock GetVehicleIndividualTires(vehicleid, &frontLeft, &frontRight, &rearLeft, &
 stock SetVehicleIndividualTires(vehicleid, frontLeft, frontRight, rearLeft, rearRight) {
 	if (!IsValidVehicle(vehicleid)) return 0;
 	new panels, doors, lights, tires;
-    GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
-    new frontLeftInternal, frontRightInternal, rearLeftInternal, rearRightInternal;
-    tf_GetTireState(tires, rearRight, frontRight, rearLeft, frontLeft);
-    if (frontLeft != TIRE_UNCHANGED) {
-    	frontLeftInternal = frontLeft;
-    }
-    if (frontRight != TIRE_UNCHANGED) {
-    	frontRightInternal = frontRight;
-    }
-    if (rearLeft != TIRE_UNCHANGED) {
-    	rearLeftInternal = rearLeft;
-    }
-    if (rearRight != TIRE_UNCHANGED) {
-    	rearRightInternal = rearRight;
-    }
-    tires = tf_EncodeTireState(rearRightInternal, frontRightInternal, rearLeftInternal, frontLeftInternal);
-    UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
-    tf_Tires[vehicleid] = tires;
-    return 1;
+	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+	new frontLeftInternal, frontRightInternal, rearLeftInternal, rearRightInternal;
+	tf_GetTireState(tires, rearRight, frontRight, rearLeft, frontLeft);
+	if (frontLeft != TIRE_UNCHANGED) {
+		frontLeftInternal = frontLeft;
+	}
+	if (frontRight != TIRE_UNCHANGED) {
+		frontRightInternal = frontRight;
+	}
+	if (rearLeft != TIRE_UNCHANGED) {
+		rearLeftInternal = rearLeft;
+	}
+	if (rearRight != TIRE_UNCHANGED) {
+		rearRightInternal = rearRight;
+	}
+	tires = tf_EncodeTireState(rearRightInternal, frontRightInternal, rearLeftInternal, frontLeftInternal);
+	UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+	tf_Tires[vehicleid] = tires;
+	return 1;
 }
 
 stock GetTireName(tireid) {
