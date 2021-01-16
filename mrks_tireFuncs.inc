@@ -1,22 +1,21 @@
 /*
-	mrks_tireFuncs 0.2
+	mrks_tireFuncs 0.3
 
 	mrks.cf | github.com/markski1
 
 	Thanks to:
 		open.mp/docs contributors
 		SACNR
-
-	Notes:
-		- 	Currently, you NEED y_hooks in order for this include to function. As I personally don't support includes requiring YSI to function,
-			I'll add proper non-y_hook compatibility to this, when I have the time.
 */
 
-#if !defined _INC_y_hooks
-	#error You must have y_hooks included for mrks_tireFuncs to work. If y_hooks is included, make sure you're including mrks_tireFuncs after it.
+#if defined mrks_TireFuncs_included
+	#endinput
 #endif
 
+#define mrks_TireFuncs_included
+
 // TIRE TYPES
+// These are arbitrary and made only for easily handling individual tires in a recognizable way.
 
 #define FRONT_LEFT_TIRE    0
 #define FRONT_RIGHT_TIRE   1
@@ -27,9 +26,11 @@
 #define INVALID_TIRE       6  // Unused
 
 // TIRE DAMAGE
+// NOT POPPED and POPPED are reasonable values that go accordingly with how samp manages tire states. UNCHANGED is an arbitrary value used when applying states.
 
 #define TIRE_NOT_POPPED    0
 #define TIRE_POPPED        1
+#define TIRE_UNCHANGED     2
 
 #if defined TIRE_FUNCS_SPANISH
 	static tf_TireNames[7][32] = {
@@ -80,75 +81,91 @@ forward OnPlayerPopTire(playerid, vehicleid, tireid);
 
 
 
-hook OnPlayerConnect(playerid) {
+public OnPlayerConnect(playerid) {
 	tf_Player[playerid][tf_veh_id] = 0;
 	tf_Player[playerid][tf_shot_tc] = 0;
+
+	#if defined tf_OnPlayerConnect
+		return tf_OnPlayerConnect(playerid);
+	#endif
 }
 
-hook OnPlayerDeath(playerid) {
+public OnPlayerDeath(playerid, killerid, reason) {
 	tf_Player[playerid][tf_veh_id] = 0;
 	tf_Player[playerid][tf_shot_tc] = 0;
+
+	#if defined tf_OnPlayerDeath
+		return tf_OnPlayerDeath(playerid, killerid, reason);
+	#endif
 }
 
-hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
 	if (hittype == BULLET_HIT_TYPE_VEHICLE) {
 		if (IsValidVehicle(hitid)) {
 			tf_Player[playerid][tf_veh_id] = hitid;
 			tf_Player[playerid][tf_shot_tc] = GetTickCount();
 		}
 	}
-	return 1;
+
+	#if defined tf_OnPlayerWeaponShot
+		return tf_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
+	#endif
 }
 
-// Damage is redefined as Dmg in hook replacements to fix a stupid limitation of the pawn compiler.
-// Update is already shrinked to Upd by default in y_hook's impl.
-DEFINE_HOOK_REPLACEMENT__(Damage, Dmg);
-hook OnVehicleDmgStatusUpd(vehicleid, playerid) {
-	if (!IsValidVehicle(vehicleid)) return 1;
+public OnVehicleDamageStatusUpdate(vehicleid, playerid) {
+	if (IsValidVehicle(vehicleid)) {
 
-	new dummy, tires;
-	GetVehicleDamageStatus(vehicleid, dummy, dummy, dummy, tires);
+		new dummy, tires;
+		GetVehicleDamageStatus(vehicleid, dummy, dummy, dummy, tires);
 
-	// If the newly reported damage reports changes to the state of the tires
-	if (tf_Tires[vehicleid] != tires) {
-		new newFrontRight, newFrontLeft, newRearRight, newRearLeft;
-		new oldFrontRight, oldFrontLeft, oldRearRight, oldRearLeft;
-		// Get the tire states for before and after the damage was reported
-		tf_GetTireState(tires, newRearRight, newFrontRight, newRearLeft, newFrontLeft);
-		tf_GetTireState(tf_Tires[vehicleid], oldRearRight, oldFrontRight, oldRearLeft, oldFrontLeft);
+		// If the newly reported damage reports changes to the state of the tires
+		if (tf_Tires[vehicleid] != tires) {
+			new newFrontRight, newFrontLeft, newRearRight, newRearLeft;
+			new oldFrontRight, oldFrontLeft, oldRearRight, oldRearLeft;
+			// Get the tire states for before and after the damage was reported
+			tf_GetTireState(tires, newRearRight, newFrontRight, newRearLeft, newFrontLeft);
+			tf_GetTireState(tf_Tires[vehicleid], oldRearRight, oldFrontRight, oldRearLeft, oldFrontLeft);
 
-		// Report damage for all popped tires, individually.
-		if (tf_IsBike(vehicleid)) {
-			if (newRearRight == TIRE_POPPED && newRearRight != oldRearRight) {
-				tf_ReportTireDamage(vehicleid, BIKE_FRONT_TIRE);
+			// Report damage for all popped tires, individually.
+			if (tf_IsBike(vehicleid)) {
+				if (newRearRight == TIRE_POPPED && newRearRight != oldRearRight) {
+					tf_ReportTireDamage(vehicleid, BIKE_FRONT_TIRE);
+				}
+				if (newFrontRight == TIRE_POPPED && newFrontRight != oldFrontRight) {
+					tf_ReportTireDamage(vehicleid, BIKE_REAR_TIRE);
+				}
+			} else {
+				if (newRearRight == TIRE_POPPED && newRearRight != oldRearRight) {
+					tf_ReportTireDamage(vehicleid, FRONT_RIGHT_TIRE);
+				}
+				if (newFrontRight == TIRE_POPPED && newFrontRight != oldFrontRight) {
+					tf_ReportTireDamage(vehicleid, REAR_RIGHT_TIRE);
+				}
+				if (newRearLeft == TIRE_POPPED && newRearLeft != oldRearLeft) {
+					tf_ReportTireDamage(vehicleid, FRONT_LEFT_TIRE);
+				}
+				if (newFrontLeft == TIRE_POPPED && newFrontLeft != oldFrontLeft) {
+					tf_ReportTireDamage(vehicleid, REAR_LEFT_TIRE);
+				}
 			}
-			if (newFrontRight == TIRE_POPPED && newFrontRight != oldFrontRight) {
-				tf_ReportTireDamage(vehicleid, BIKE_REAR_TIRE);
-			}
-		} else {
-			if (newRearRight == TIRE_POPPED && newRearRight != oldRearRight) {
-				tf_ReportTireDamage(vehicleid, FRONT_RIGHT_TIRE);
-			}
-			if (newFrontRight == TIRE_POPPED && newFrontRight != oldFrontRight) {
-				tf_ReportTireDamage(vehicleid, REAR_RIGHT_TIRE);
-			}
-			if (newRearLeft == TIRE_POPPED && newRearLeft != oldRearLeft) {
-				tf_ReportTireDamage(vehicleid, FRONT_LEFT_TIRE);
-			}
-			if (newFrontLeft == TIRE_POPPED && newFrontLeft != oldFrontLeft) {
-				tf_ReportTireDamage(vehicleid, REAR_LEFT_TIRE);
-			}
+
+			// And update the internal tire state
+			tf_Tires[vehicleid] = tires;
 		}
-
-		// And update the internal tire state
-		tf_Tires[vehicleid] = tires;
 	}
-	return 1;
+
+	#if defined tf_OnVehicleDamageStatusUpdate
+		return tf_OnVehicleDamageStatusUpdate(vehicleid, playerid);
+	#endif
 }
 
-hook OnVehicleSpawn(vehicleid) {
+public OnVehicleSpawn(vehicleid) {
 	new dummy;
 	GetVehicleDamageStatus(vehicleid, dummy, dummy, dummy, tf_Tires[vehicleid]);
+
+	#if defined tf_OnVehicleSpawn
+		return tf_OnVehicleSpawn(vehicleid);
+	#endif
 }
 
 
@@ -166,8 +183,23 @@ stock SetVehicleIndividualTires(vehicleid, fLeft, fRight, rLeft, rRight) {
 	if (!IsValidVehicle(vehicleid)) return 0;
 	new panels, doors, lights, tires;
     GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
-    tires = tf_EncodeTireState(rRight, fRight, rLeft, fLeft);
+    new fLeftInternal, fRightInternal, rLeftInternal, rRightInternal;
+    tf_GetTireState(tires, rRight, fRight, rLeft, fLeft);
+    if (fLeft != TIRE_UNCHANGED) {
+    	fLeftInternal = fLeft;
+    }
+    if (fRight != TIRE_UNCHANGED) {
+    	fRightInternal = fRight;
+    }
+    if (rLeft != TIRE_UNCHANGED) {
+    	rLeftInternal = rLeft;
+    }
+    if (rRight != TIRE_UNCHANGED) {
+    	rRightInternal = rRight;
+    }
+    tires = tf_EncodeTireState(rRightInternal, fRightInternal, rLeftInternal, fLeftInternal);
     UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+    tf_Tires[vehicleid] = tires;
     return 1;
 }
 
@@ -219,3 +251,66 @@ static tf_GetTireState(tires, &rRight, &fRight, &rLeft, &fLeft) {
 stock tf_EncodeTireState(rRight, fRight, rLeft, fLeft) {
     return rRight | (fRight << 1) | (rLeft << 2) | (fLeft << 3);
 }
+
+
+// ALS HOOKING
+
+#if defined _ALS_OnPlayerConnect
+	#undef OnPlayerConnect
+#else
+	#define _ALS_OnPlayerConnect
+#endif
+
+#define OnPlayerConnect tf_OnPlayerConnect
+
+#if defined tf_OnPlayerConnect
+	forward tf_OnPlayerConnect();
+#endif
+
+#if defined _ALS_OnPlayerDeath
+	#undef OnPlayerDeath
+#else
+	#define _ALS_OnPlayerDeath
+#endif
+
+#define OnPlayerDeath tf_OnPlayerDeath
+
+#if defined tf_OnPlayerDeath
+	forward tf_OnPlayerDeath();
+#endif
+
+#if defined _ALS_OnVehicleDamageStatusUpd
+	#undef OnVehicleDamageStatusUpdate
+#else
+	#define _ALS_OnVehicleDamageStatusUpd
+#endif
+
+#define OnVehicleDamageStatusUpdate tf_OnVehicleDamageStatusUpdate
+
+#if defined tf_OnVehicleDamageStatusUpdate
+	forward tf_OnVehicleDamageStatusUpdate();
+#endif
+
+#if defined _ALS_OnVehicleSpawn
+	#undef OnVehicleSpawn
+#else
+	#define _ALS_OnVehicleSpawn
+#endif
+
+#define OnVehicleSpawn tf_OnVehicleSpawn
+
+#if defined tf_OnVehicleSpawn
+	forward tf_OnVehicleSpawn();
+#endif
+
+#if defined _ALS_OnPlayerWeaponShot
+	#undef OnPlayerWeaponShot
+#else
+	#define _ALS_OnPlayerWeaponShot
+#endif
+
+#define OnPlayerWeaponShot tf_OnPlayerWeaponShot
+
+#if defined tf_OnPlayerWeaponShot
+	forward tf_OnPlayerWeaponShot();
+#endif
