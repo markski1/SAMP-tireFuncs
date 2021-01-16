@@ -130,11 +130,11 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid) {
 
 		// If the newly reported damage reports changes to the state of the tires
 		if (tf_Tires[vehicleid] != tires) {
-			new newFrontRight, newFrontLeft, newRearRight, newRearLeft;
-			new oldFrontRight, oldFrontLeft, oldRearRight, oldRearLeft;
+			new newFrontRight, newFrontLeft, newRearRight, newRearearLeft;
+			new oldFrontRight, oldFrontLeft, oldRearRight, oldRearearLeft;
 			// Get the tire states for before and after the damage was reported
-			tf_GetTireState(tires, newRearRight, newFrontRight, newRearLeft, newFrontLeft);
-			tf_GetTireState(tf_Tires[vehicleid], oldRearRight, oldFrontRight, oldRearLeft, oldFrontLeft);
+			tf_GetTireState(tires, newRearRight, newFrontRight, newRearearLeft, newFrontLeft);
+			tf_GetTireState(tf_Tires[vehicleid], oldRearRight, oldFrontRight, oldRearearLeft, oldFrontLeft);
 
 			// Report damage for all popped tires, individually.
 			if (tf_IsBike(vehicleid)) {
@@ -151,7 +151,7 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid) {
 				if (newFrontRight == TIRE_POPPED && newFrontRight != oldFrontRight) {
 					tf_ReportTireDamage(vehicleid, REAR_RIGHT_TIRE);
 				}
-				if (newRearLeft == TIRE_POPPED && newRearLeft != oldRearLeft) {
+				if (newRearearLeft == TIRE_POPPED && newRearearLeft != oldRearearLeft) {
 					tf_ReportTireDamage(vehicleid, FRONT_LEFT_TIRE);
 				}
 				if (newFrontLeft == TIRE_POPPED && newFrontLeft != oldFrontLeft) {
@@ -183,31 +183,31 @@ public OnVehicleSpawn(vehicleid) {
 
 
 
-stock GetVehicleIndividualTires(vehicleid, &fLeft, &fRight, &rLeft, &rRight) {
+stock GetVehicleIndividualTires(vehicleid, &frontLeft, &frontRight, &rearLeft, &rearRight) {
 	if (!IsValidVehicle(vehicleid)) return 0;
-	tf_GetTireState(tf_Tires[vehicleid], rRight, fRight, rLeft, fLeft);
+	tf_GetTireState(tf_Tires[vehicleid], rearRight, frontRight, rearLeft, frontLeft);
 	return 1;
 }
 
-stock SetVehicleIndividualTires(vehicleid, fLeft, fRight, rLeft, rRight) {
+stock SetVehicleIndividualTires(vehicleid, frontLeft, frontRight, rearLeft, rearRight) {
 	if (!IsValidVehicle(vehicleid)) return 0;
 	new panels, doors, lights, tires;
     GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
-    new fLeftInternal, fRightInternal, rLeftInternal, rRightInternal;
-    tf_GetTireState(tires, rRight, fRight, rLeft, fLeft);
-    if (fLeft != TIRE_UNCHANGED) {
-    	fLeftInternal = fLeft;
+    new frontLeftInternal, frontRightInternal, rearLeftInternal, rearRightInternal;
+    tf_GetTireState(tires, rearRight, frontRight, rearLeft, frontLeft);
+    if (frontLeft != TIRE_UNCHANGED) {
+    	frontLeftInternal = frontLeft;
     }
-    if (fRight != TIRE_UNCHANGED) {
-    	fRightInternal = fRight;
+    if (frontRight != TIRE_UNCHANGED) {
+    	frontRightInternal = frontRight;
     }
-    if (rLeft != TIRE_UNCHANGED) {
-    	rLeftInternal = rLeft;
+    if (rearLeft != TIRE_UNCHANGED) {
+    	rearLeftInternal = rearLeft;
     }
-    if (rRight != TIRE_UNCHANGED) {
-    	rRightInternal = rRight;
+    if (rearRight != TIRE_UNCHANGED) {
+    	rearRightInternal = rearRight;
     }
-    tires = tf_EncodeTireState(rRightInternal, fRightInternal, rLeftInternal, fLeftInternal);
+    tires = tf_EncodeTireState(rearRightInternal, frontRightInternal, rearLeftInternal, frontLeftInternal);
     UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
     tf_Tires[vehicleid] = tires;
     return 1;
@@ -254,17 +254,17 @@ static tf_IsBike(vehicleid) {
 	return 0;
 }
 
-static tf_GetTireState(tires, &rRight, &fRight, &rLeft, &fLeft) {
-	rRight = tires & 1;
-	fRight = tires >> 1 & 1;
-	rLeft = tires >> 2 & 1;
-	fLeft = tires >> 3 & 1;
+static tf_GetTireState(tires, &rearRight, &frontRight, &rearLeft, &frontLeft) {
+	rearRight = tires & 1;
+	frontRight = tires >> 1 & 1;
+	rearLeft = tires >> 2 & 1;
+	frontLeft = tires >> 3 & 1;
 }
 
 
 // This should be a 'static stock', but that would make this incompatible with the old normie compiler
-stock tf_EncodeTireState(rRight, fRight, rLeft, fLeft) {
-    return rRight | (fRight << 1) | (rLeft << 2) | (fLeft << 3);
+stock tf_EncodeTireState(rearRight, frontRight, rearLeft, frontLeft) {
+    return rearRight | (frontRight << 1) | (rearLeft << 2) | (frontLeft << 3);
 }
 
 
