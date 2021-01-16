@@ -12,6 +12,10 @@
 	#endinput
 #endif
 
+#if !defined IsValidVehicle
+	native IsValidVehicle(vehicleid);
+#endif
+
 #define mrks_TireFuncs_included
 
 // TIRE TYPES
@@ -31,6 +35,8 @@
 #define TIRE_NOT_POPPED    0
 #define TIRE_POPPED        1
 #define TIRE_UNCHANGED     2
+
+// TIRE NAMES
 
 #if defined TIRE_FUNCS_SPANISH
 	static tf_TireNames[7][32] = {
@@ -106,6 +112,10 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			tf_Player[playerid][tf_shot_tc] = GetTickCount();
 		}
 	}
+
+	#if defined TIREFUNCS_DEBUG
+		SendClientMessage(playerid, 0x00AA00FF, "[DEBUG] tireFuncs detects you shooting a vehicle.");
+	#endif
 
 	#if defined tf_OnPlayerWeaponShot
 		return tf_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
@@ -223,13 +233,18 @@ static tf_ReportTireDamage(vehicleid, tireid) {
 		if (!IsPlayerConnected(i)) continue;
 		if (tf_Player[i][tf_veh_id] != vehicleid) continue;
 		if (tf_Player[i][tf_shot_tc] + TIRE_POP_THRESHOLD > currentTc) {
-			if (tf_Player[i][tf_shot_tc] + TIRE_POP_THRESHOLD > currentMax) {
-				currentMax = tf_Player[i][tf_shot_tc] + TIRE_POP_THRESHOLD;
+			if (tf_Player[i][tf_shot_tc] > currentMax) {
+				currentMax = tf_Player[i][tf_shot_tc];
 				currentID = i;
 			}
 		}
 	}
 	CallLocalFunction("OnPlayerPopTire", "iii", currentID, vehicleid, tireid);
+	#if defined TIREFUNCS_DEBUG
+		new debugStr[128];
+		format(debugStr, 128, "[DEBUG] tireFuncs detects popped tire %i on vehicle id %i.", tireid, vehicleid);
+		SendClientMessageToAll(0x00FAFAFF, debugStr);
+	#endif
 }
 
 static tf_IsBike(vehicleid) {
@@ -253,7 +268,8 @@ stock tf_EncodeTireState(rRight, fRight, rLeft, fLeft) {
 }
 
 
-// ALS HOOKING
+// ALS4 (7?) HOOKING
+// https://github.com/compuphase/pawn/issues/28
 
 #if defined _ALS_OnPlayerConnect
 	#undef OnPlayerConnect
