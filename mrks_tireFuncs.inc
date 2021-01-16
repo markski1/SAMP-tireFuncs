@@ -1,5 +1,5 @@
 /*
-	mrks_tireFuncs 0.1
+	mrks_tireFuncs 0.2
 
 	mrks.cf | github.com/markski1
 
