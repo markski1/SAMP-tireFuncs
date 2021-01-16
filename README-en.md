@@ -51,6 +51,8 @@ In this example, a message will be sent to the driver of a vehicle if their tire
 
 *Note: `GetVehicleDriver` is not included in this library.
 
+*Note2: You need lagcomp for this callback to work. Otherwise, you'll need to use [opws-fix](https://github.com/boorzz/samp-opws-fix/)
+
 
 ## Values
 
