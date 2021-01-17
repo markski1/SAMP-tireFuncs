@@ -20,7 +20,7 @@ GetTireName(tireid) | Recibe el id de una rueda y devuelve su nombre (Por ejempl
 
 ## Callbacks
 
-vModData implementa un solo callback:
+tireFuncs implementa un solo callback:
 
 #### OnPlayerPopTire(playerid, vehicleid, tireid)
 
