@@ -28,33 +28,7 @@ It indicates that `playerid` popped a tire `tireid` of the vehicle `vehicleid`.
 
 `playerid` will be INVALID_PLAYER_ID if the player cannot be determined for some reason.
 
-Example usage:
-
-```cpp
-public OnPlayerPopTire(playerid, vehicleid, tireid) {
-	new name[MAX_PLAYER_NAME], string[128];
-	new driverid = GetVehicleDriver(vehicleid);
-	if (IsPlayerConnected(driverid) && IsPlayerConnected(playerid)) {
-		// Notify driver
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		format(string, sizeof(string), "%s has popped your vehicle's %s.", name, GetTireName(tireid));
-		SendClientMessage(driverid, RED, string);
-		// Notify shooter
-		format(string, sizeof(string), "You have popped a vehicle's %s.", GetTireName(tireid));
-		SendClientMessage(playerid, GREEN, string);
-	} else if (IsPlayerConnected(driverid)) {
-		format(string, sizeof(string), "Your vehicle's %s has been popped.", GetTireName(tireid));
-		SendClientMessage(driverid, RED, string);
-	}
-}
-```
-
-In this example, a message will be sent to the driver of a vehicle if their tire is popped, indicating which tire was popped. It'll also send a message to the player who shot the tire telling them of their success.
-
-*Note: `GetVehicleDriver` is not included in this library.
-
-*Note2: You need lagcomp for this callback to work. Otherwise, you'll need to use [opws-fix](https://github.com/boorzz/samp-opws-fix/)
-
+Please note that you need lagcomp for this callback to work. Otherwise, you'll need to use [opws-fix](https://github.com/boorzz/samp-opws-fix/).
 
 ## Values
 

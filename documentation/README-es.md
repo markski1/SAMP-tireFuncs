@@ -30,33 +30,7 @@ Este indica que `playerid` revento la rueda `tireid` del vehiculo `vehicleid`.
 
 `playerid` sera INVALID_PLAYER_ID si la libreria no logra saber que jugador lo hizo por algun motivo.
 
-Ejemplo de uso:
-
-```cpp
-public OnPlayerPopTire(playerid, vehicleid, tireid) {
-	new name[MAX_PLAYER_NAME], string[128];
-	new driverid = GetVehicleDriver(vehicleid);
-	if (IsPlayerConnected(driverid) && IsPlayerConnected(playerid)) {
-		// Notificar al conductor
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		format(string, sizeof(string), "%s ha reventado la %s de tu vehiculo.", name, GetTireName(tireid));
-		SendClientMessage(driverid, RED, string);
-		// Notificar al jugador
-		format(string, sizeof(string), "Has reventado la %s de un vehiculo.", GetTireName(tireid));
-		SendClientMessage(playerid, GREEN, string);
-	} else if (IsPlayerConnected(driverid)) {
-		format(string, sizeof(string), "La %s de tu vehiculo ha sido reventada.", GetTireName(tireid));
-		SendClientMessage(driverid, RED, string);
-	}
-}
-```
-
-En este ejemplo, se envia un mensaje al conductor de un vehiculo si le revientan su rueda. Y en el caso de que se determine quien fue, se le informa su nombre. Al mismo tiempo, tambien notifica a quien haya disparado que ha logrado reventar una rueda.
-
-*Nota: `GetVehicleDriver` no se incluye en esta libreria.
-
-*Nota2: Este callback solo funciona con lagcomp. Si tu server no tiene lagcomp, tendras que usar [opws-fix](https://github.com/boorzz/samp-opws-fix/)
-
+Notese que este callback solo funciona con lagcomp. Si tu server no tiene lagcomp, tendras que usar [opws-fix](https://github.com/boorzz/samp-opws-fix/).
 
 ## Valores
 
