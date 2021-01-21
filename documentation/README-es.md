@@ -55,6 +55,8 @@ TIRE_POPPED       // Rueda reventada
 TIRE_UNCHANGED    // Rueda no modificada (se utiliza en `SetVehicleIndividualTires` para no modificar una rueda especifica.)
 ```
 
+Por ultimo, `VALID_TIRE_TYPES` es la cantidad de ruedas que maneja este include (6). Si bien las chances de que este numero cambie tienden a 0, no esta de mas utilizar el macro para estar seguros.
+
 ## Ejemplos de implementación
 
 Muchos ejemplos estan disponibles [aqui](../examples/ejemplos-es.pwn)
