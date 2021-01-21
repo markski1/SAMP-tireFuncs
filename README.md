@@ -5,9 +5,9 @@ Provides functions and callbacks for easily handling vehicle tires in SA-MP.
 
 #### Instructions
 
-- For instructions in english, [click here](README-en.md).
+- For instructions in english, [click here](documentation/README-en.md).
 
-- Para instrucciones en español, [haz click aqui](README-es.md).
+- Para instrucciones en español, [haz click aqui](documentation/README-es.md).
 
 <br>
 
