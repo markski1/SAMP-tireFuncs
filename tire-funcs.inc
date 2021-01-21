@@ -1,5 +1,5 @@
 /*
-	tireFuncs 1.0
+	tireFuncs 1.1
 
 	mrks.cf | github.com/markski1
 
@@ -29,10 +29,13 @@
 #define BIKE_REAR_TIRE     5
 #define INVALID_TIRE       6  // Unused
 
+#define VALID_TIRE_TYPES   6
+
 // TIRE DAMAGE
 // NOT POPPED and POPPED are reasonable values that go accordingly with how samp manages tire states. UNCHANGED is an arbitrary value used when applying states.
 
 #define TIRE_NOT_POPPED    0
+#define TIRE_FIX           0 // same as above, name makes more sense in some scenarios.
 #define TIRE_POPPED        1
 #define TIRE_UNCHANGED     2
 
@@ -211,6 +214,38 @@ stock SetVehicleIndividualTires(vehicleid, frontLeft, frontRight, rearLeft, rear
 	UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 	tf_Tires[vehicleid] = tires;
 	return 1;
+}
+
+stock GetIndividualTireState(vehicleid, tireid) {
+	new front_left, front_right, rear_left, rear_right;
+	GetVehicleIndividualTires(vehicleid, front_left, front_right, rear_left, rear_right);
+	switch (tireid) {
+		case FRONT_LEFT_TIRE: {
+			if (tf_IsBike(vehicleid)) return -1;
+			return front_left;
+		}
+		case FRONT_RIGHT_TIRE: {
+			if (tf_IsBike(vehicleid)) return -1;
+			return front_right;
+		}
+		case REAR_LEFT_TIRE: {
+			if (tf_IsBike(vehicleid)) return -1;
+			return rear_left;
+		}
+		case REAR_RIGHT_TIRE: {
+			if (tf_IsBike(vehicleid)) return -1;
+			return rear_right;
+		}
+		case BIKE_FRONT_TIRE: {
+			if (!tf_IsBike(vehicleid)) return -1;
+			return front_right;
+		}
+		case BIKE_REAR_TIRE: {
+			if (!tf_IsBike(vehicleid)) return -1;
+			return rear_right;
+		}
+	}
+	return -1;
 }
 
 stock GetTireName(tireid) {
