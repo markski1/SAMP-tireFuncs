@@ -3,7 +3,7 @@ tireFuncs is a simple library which implements callbacks for tire damage and sim
 
 ## Installation
 
-To install this library, simply download [tire-funcs.inc](tire-funcs.inc) and include it into your gamemode.
+To install this library, simply download [tire-funcs.inc](../tire-funcs.inc) and include it into your gamemode.
 
 <br>
 

@@ -3,7 +3,7 @@ tireFuncs es una simple libreria que implementa callbacks para daños a ruedas, 
 
 ## Instalacion
 
-Para instalar esta libreria, simplemente descarga [tire-funcs.inc](tire-funcs.inc) e incluyelo en tu gamemode.
+Para instalar esta libreria, simplemente descarga [tire-funcs.inc](../tire-funcs.inc) e incluyelo en tu gamemode.
 Agrega `#define TIRE_FUNCS_SPANISH` arriba del include si deseas que `GetTireName` retorne valores en español.
 
 <br>
