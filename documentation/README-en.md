@@ -15,6 +15,7 @@ GetVehicleIndividualTires(vehicleid, &frontLeft, &frontRight, &rearLeft, &rearRi
 SetVehicleIndividualTires(vehicleid, frontLeft, frontRight, rearLeft, rearRight) | Allows you to set the state of each individual tire of a vehicle. Acceptable values are `TIRE_NOT_POPPED (0)`, `TIRE_POPPED (1)` or `TIRE_UNCHANGED (2)`
 GetTireName(tireid) | Receives a tireid and returns a string containing it's name. (I.E. if tireid is `REAR_LEFT_TIRE (2)` this will return `"rear left tire"`)
 GetIndividualTireState(vehicleid, i) | Receives a vehicleid and tireid, and returns it's state. Similar to GetVehicleIndividualTires, but for a single tire. Returns -1 if the vehicle has no such tire. (I.E if requesting the state of BIKE_FRONT_TIRE in a 4 wheel car)
+
 <br>
 
 ## Callbacks
@@ -77,3 +78,7 @@ TIRE_FIX        // Same as TIRE_NOT_POPPED, but makes more sense in some scenari
 TIRE_POPPED
 TIRE_UNCHANGED 	// Used in `SetVehicleIndividualTire` to not modify a specified tire
 ```
+
+## Implementation examples
+
+Many example snippets are available [here](../examples/examples-en.pwn)

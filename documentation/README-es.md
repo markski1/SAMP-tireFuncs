@@ -17,6 +17,7 @@ GetVehicleIndividualTires(vehicleid, &frontLeft, &frontRight, &rearLeft, &rearRi
 SetVehicleIndividualTires(vehicleid, frontLeft, frontRight, rearLeft, rearRight) | Permite definir el estado de cada rueda individualmente. Acepta los valores `TIRE_NOT_POPPED (0)`, `TIRE_POPPED (1)` y `TIRE_UNCHANGED (2)`
 GetTireName(tireid) | Recibe el id de una rueda y devuelve su nombre (Por ejemplo, si el id de la rueda es `REAR_LEFT_TIRE (2)` esto devolvera un string `"rueda trasera izquierda"`)
 GetIndividualTireState(vehicleid, i) | Recibe el id de un vehiculo, el id de una rueda, y retorna su estado. Similar a GetVehicleIndividualTires, pero para una sola rueda. Retorna -1 si el vehiculo no tiene dicha rueda. (Por ejemplo, si se pide el estado de una rueda delantera de moto en un auto)
+
 <br>
 
 ## Callbacks
@@ -79,3 +80,7 @@ TIRE_FIX          // Lo mismo que TIRE_NOT_POPPED, pero tiene mas sentido en alg
 TIRE_POPPED       // Rueda reventada
 TIRE_UNCHANGED    // Rueda no modificada (se utiliza en `SetVehicleIndividualTires` para no modificar una rueda especifica.)
 ```
+
+## Ejemplos de implementación
+
+Muchos ejemplos estan disponibles [aqui](../examples/ejemplos-es.pwn)
