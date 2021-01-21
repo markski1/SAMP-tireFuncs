@@ -53,6 +53,8 @@ TIRE_POPPED
 TIRE_UNCHANGED 	// Used in `SetVehicleIndividualTire` to not modify a specified tire
 ```
 
+Last but not least, `VALID_TIRE_TYPES` is the number of tire types this library handles (6). Although the chances of this number ever changing are realistically nothing but nil, you should use the macro instead of 6 just to be sure.
+
 ## Implementation examples
 
 Many example snippets are available [here](../examples/examples-en.pwn)
