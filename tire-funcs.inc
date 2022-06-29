@@ -1,7 +1,7 @@
 /*
 	tireFuncs 1.1
 
-	mrks.cf | github.com/markski1
+	markski.ar | github.com/markski1
 
 	Thanks to:
 		open.mp/docs contributors
